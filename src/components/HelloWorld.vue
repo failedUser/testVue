@@ -86,9 +86,8 @@ export default {
                let width = img.width;
                let height = img.height;
               let ctx = dom.getContext('2d');
-              ctx.drawImage(img,0,0, width*4, height*4);
+              ctx.drawImage(img,0,0, width, height);
             }
-            // document.body.appendChild(img);
         })
         .catch(function (error) {
             console.error('oops, something went wrong!', error);

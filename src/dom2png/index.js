@@ -107,6 +107,7 @@
     function toPng(node, options) {
         return draw(node, options || {})
             .then(function (canvas) {
+                console.log('')
                 return canvas.toDataURL();
             });
     }
@@ -154,20 +155,26 @@
             .then(util.makeImage)
             .then(util.delay(100))
             .then(function (image) {
-                var canvas = newCanvas(domNode);
-                canvas.getContext('2d').drawImage(image, 0, 0);
+                // console.dir(image);
+                let windowDevicePixel = 4;
+                var canvas = newCanvas(domNode, windowDevicePixel);
+                canvas.getContext('2d').drawImage(image, 0, 0, image.width * windowDevicePixel, image.height * windowDevicePixel);
+                document.body.append(canvas);
                 return canvas;
             });
 
-        function newCanvas(domNode) {
+        function newCanvas(domNode, scale) {
             var canvas = document.createElement('canvas');
-            canvas.width = options.width || util.width(domNode);
-            canvas.height = options.height || util.height(domNode);
-
+            canvas.width = (options.width || util.width(domNode)) * scale;
+            canvas.height = (options.height || util.height(domNode)) * scale;
+            canvas.style.cssText = `
+                width: ${options.width || util.width(domNode)}px;
+                height: ${options.height || util.height(domNode)}px;
+            `
             if (options.bgcolor) {
                 var ctx = canvas.getContext('2d');
                 ctx.fillStyle = options.bgcolor;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(0, 0, canvas.width * scale, canvas.height * scale);
             }
 
             return canvas;
@@ -368,6 +375,7 @@
                     foreignObject + '</svg>';
             })
             .then(function (svg) {
+                // console.log('svg', svg);
                 return 'data:image/svg+xml;charset=utf-8,' + svg;
             });
     }
@@ -477,6 +485,8 @@
         }
 
         function makeImage(uri) {
+            // console.log('makeImage', uri);
+            // 这个地方作为svg源代码，清晰度还没有失真
             return new Promise(function (resolve, reject) {
                 var image = new Image();
                 image.onload = function () {

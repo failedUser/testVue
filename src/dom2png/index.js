@@ -264,13 +264,16 @@
                         styleElement.appendChild(res);
                         clone.appendChild(styleElement);
                     })
-                
+                    
+
                     function formatPseudoElementStyle(className, element, style) {
                         var selector = '.' + className + ':' + element;
-                        return style.cssText ? formatCssText(style).then(res => {
-                            document.createTextNode(selector + '{' + cssText + '}');
-                            return Promise.resolve(); 
-                        }) : formatCssProperties(style);
+                        return style.cssText
+                        ? formatCssText(style).then(res => {
+                            return document.createTextNode(selector + '{' + res + '}');
+                        }) :  Promise.resolve(document.createTextNode(selector + '{' + formatCssProperties(style) + '}'));
+                        // var cssText = style.cssText ? formatCssText(style) : formatCssProperties(style);
+                        // return document.createTextNode(selector + '{' + cssText + '}');
 
                         function formatCssText(style) {
                             var content = style.getPropertyValue('content');
@@ -291,6 +294,8 @@
                                     return style.cssText.replace(urlAsRegex(url), '$1' + dataUrl + '$3') + ' content: ' + content + ';';
                                     // console.log('str', str);
                                 });
+                            } else {
+                                return Promise.resolve(style.cssText + ' content: ' + content + ';');
                             }
                             // return style.cssText + ' content: ' + content + ';';
                         }

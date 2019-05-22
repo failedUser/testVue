@@ -6,29 +6,59 @@
     
     <!-- 处理水平居中的问题 -->
     <div class="demo-1 demo-item">
-      <div class="demo-fixed">
-        滚动切图这个问题很是不准。只能从顶部开始切
+       <!-- 检查fixed 定位模块 -->
+      <!-- <div class="demo-fixed  demo-fixed1">
+        fix-top-0
+        <div class="img"></div>
+      </div> -->
+      <!-- <div class="demo-fixed demo-fixed1">
+        fix-top-
         <div class="img"></div>
       </div>
+      <div class="demo-fixed demo-fixed2">
+        fix-top-0
+        <div class="img"></div>
+      </div> -->
+       <!-- 处理各种字体 -->
+      <div class="demo-1-container">
+      
+          <div class="middle-line"> </div>
+          <div class="demo-1-item">
+              
+              <div style="font-size:20px;">12</div>
+              <div style="font-size:20px;color: red;font-family: PingFangSC-Regular;">你好</div>
+              <div style="font-size:20px;color: red;font-family: PingFangSC-Medium;">你好</div>
+              <div style="
+                  border-bottom-left-radius: 1rem;
+                  border-top-left-radius: 1rem;
+                  background: #FF6D71;">12</div>
+                <div style="
+                border-radius: .7rem;
+                background: #fff;">12</div>
+                <div class="demo-shadow">shadow</div>
+
+          </div>
+      </div>
+      <!-- 处理各种图片 -->
       <div class="demo-1-container">
           <div class="middle-line"> </div>
           <div class="demo-1-item">
               <!-- <img class="demo-1-img" src="https://static.caibeike.com/i/3b15547dc8e25fd51c01b2ad726361c1-cnRNZm" /> -->
               <!-- <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" /> -->
               <img  class="demo-3-img"  src="../assets/test11.png" />
-              <div class="demo-shadow">shadow</div>
               <!-- <span class="resolve-baseline">121212121212121212</span> -->
               <!-- <span class="demo-2-clamp">                
                 121212121212121212121212121212121212121 2121212121212121212121212
                 </span> -->
-              <p>正常的字体A12d.$#@^&*$ </p>
+              <!-- <p>正常的字体A12d.$#@^&*$ </p> -->
                <div class="back-img"></div>
+               <div class="back-img-much"></div>
               <div class="after-img"></div>
           </div>
-          <div class="demo-absolute">
+          <!-- <div class="demo-absolute">
             滚动切图这个问题很是不准。只能从顶部开始切
             <div class="img"></div>
-          </div>
+          </div> -->
       </div>
       <div class="demo-1-container">
           <div class="middle-line"> </div>
@@ -228,13 +258,22 @@ body {
   transform: translateZ(0) scale(1, 1);
   display: block;
 }
+.after-img::before {
+  content: '';
+  width: 100px;
+  height: 50px;
+  background: url('../assets/test11.png') 100% 0 no-repeat,  url('../assets/test11.png') 0 100% no-repeat;
+  background-size: auto 100%;
+  display: block;
+
+}
 
 .after-img::after {
   content: '';
-  width: 26px;
-  height: 25px;
-  background: url('../assets/test11.png') no-repeat;
-  background-size: 100%;
+  width: 100px;
+  height: 50px;
+  background: url('../assets/test11.png') 100% 0 no-repeat,  url('../assets/test11.png') 0 100% no-repeat;
+  background-size: auto 100%;
   display: block;
 
 }
@@ -269,7 +308,21 @@ body {
       background-size: auto 100%;
   }
 }
-
+.back-img-much {
+  height: 50px;
+  width: 100px;
+  background: url('../assets/test11.png') 100% 0 no-repeat,  url('../assets/test11.png') 0 100% no-repeat;
+  background-size: auto 100%;
+}
+.demo-fixed1 {
+  top: 20px;
+  left: 100px;
+}
+.demo-fixed2 {
+  bottom: 10px;
+  top: auto;
+  left: 100px;
+}
 .demo-absolute{
     position: absolute;
     padding: 15px;
@@ -287,5 +340,23 @@ body {
 }
 #canvas-demo1 {
   margin-top: 50px;
+}
+.demo-1-item > div {
+  margin-right: 10px;
+}
+
+.title-bg {
+  background: url('../assets/test11.png') rgba(0, 0, 0, .2) 1.1rem 2.3rem no-repeat;
+  background-size: 83%;
+  &::after {
+      content: '';
+      position: absolute;
+      top: 4rem;
+      right: 27%;
+      left: 27%;
+      height: 1.5rem;
+      background: url('../assets/test11.png') 0 50% no-repeat;
+      background-size: 100% auto;
+  }
 }
 </style>

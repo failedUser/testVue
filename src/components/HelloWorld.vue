@@ -83,6 +83,7 @@ export default {
       // let _domContainer = document.querySelector(".demo-1-container");
       let _domContainer = document.body;
       domtoimage.toPng(_domContainer, {
+        bgcolor: 'gray'
       })
         .then(function (dataUrl) {
             var img = new Image();
@@ -130,13 +131,15 @@ export default {
   justify-content: space-between;
   align-items: center;
   position: relative;
-  height: 201px;
+  height: 100px;;
+  overflow: scroll;
   background: -webkit-linear-gradient(top, #D22D23, #D22D23 16%, #FB8065 55%, #FB8065);;
   /* background:linear-gradient(48deg,rgba(0,153,170,1) 0%,rgba(0,198,214,1) 100%); */
   /* margin-top: 10px; */
   /* background: yellow; */
 }
 .demo-1-item {
+  height: 200px;
   /* background: red; */
   display: flex;
   justify-content: flex-start;

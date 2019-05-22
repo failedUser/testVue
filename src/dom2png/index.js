@@ -155,12 +155,12 @@ function draw (domNode, options) {
     .then(util.makeImage)
     .then(util.delay(100))
     .then(function (image) {
-      // console.dir(image);
       let windowDevicePixel = 4
       var canvas = newCanvas(domNode, windowDevicePixel)
-      canvas.getContext('2d').drawImage(image, 0, 0, image.width * windowDevicePixel, image.height * windowDevicePixel)
-      // document.body.append(canvas);
-      console.log('canvas', canvas)
+      // canvas.getContext('2d').drawImage(image, 0, 100, image.width, image.height, 0, 0, canvas.width, canvas.height)
+      resizeImage(domNode, canvas, image)
+      document.body.append(canvas)
+      //   console.log('canvas', canvas)
       return canvas
     })
 
@@ -179,6 +179,31 @@ function draw (domNode, options) {
     }
 
     return canvas
+  }
+
+  function resizeImage (domNode, canvas, image) {
+    // let scrollY = domNode.scrollHeight;
+    let Y = !domNode.ownerDocument || domNode.tagName === 'BODY'
+      ? document.documentElement.scrollTop
+      : domNode.scrollTop
+    let X = !domNode.ownerDocument || domNode.tagName === 'BODY'
+      ? document.documentElement.scrollLeft
+      : domNode.scrollLeft
+    let sx = image.width
+    let sy = image.height
+    let dx = canvas.width
+    let dy = canvas.height
+    canvas.getContext('2d').drawImage(
+      image,
+      X,
+      Y,
+      sx,
+      sy,
+      0,
+      0,
+      dx,
+      dy
+    )
   }
 }
 

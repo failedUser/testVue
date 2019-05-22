@@ -30,7 +30,27 @@
             <div class="img"></div>
           </div>
       </div>
-      <canvas id="canvas-demo1" />
+      <div class="demo-1-container">
+          <div class="middle-line"> </div>
+          <div class="demo-1-item">
+              <!-- <img class="demo-1-img" src="https://static.caibeike.com/i/3b15547dc8e25fd51c01b2ad726361c1-cnRNZm" /> -->
+              <!-- <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" /> -->
+              <img  class="demo-3-img"  src="../assets/test11.png" />
+              <div class="demo-shadow">shadow</div>
+              <!-- <span class="resolve-baseline">121212121212121212</span> -->
+              <!-- <span class="demo-2-clamp">                
+                121212121212121212121212121212121212121 2121212121212121212121212
+                </span> -->
+              <p>正常的字体A12d.$#@^&*$ </p>
+               <div class="back-img"></div>
+              <div class="after-img"></div>
+          </div>
+          <div class="demo-absolute">
+            滚动切图这个问题很是不准。只能从顶部开始切
+            <div class="img"></div>
+          </div>
+      </div>
+      <canvas style="display:none;margin-top:50px;" id="canvas-demo1" />
     </div>
     
     <!-- 处理不支持截断的属性 -->
@@ -81,7 +101,7 @@ export default {
     },
     domToImage() {
       // let _domContainer = document.querySelector(".demo-1-container");
-      let _domContainer = document.body;
+      let _domContainer = document.documentElement;
       domtoimage.toPng(_domContainer, {
         bgcolor: 'gray'
       })
@@ -95,8 +115,10 @@ export default {
               let ctx = dom.getContext('2d');
               dom.width = img.width;
               dom.height = img.height;
-               dom.style.cssText = `width:${dom.width/4}px;height:${dom.height/4}`;
+              // console.log(img.width, img.height);
+               dom.style.cssText = `width:${dom.width/4}px;height:${dom.height/4}px`;
               ctx.drawImage(img,0,0, width, height);
+              dom.style.display = 'block';
             }
         })
         .catch(function (error) {
@@ -113,26 +135,29 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="less" scoped>
-
+<style lang="less" >
+body {
+  margin: 0;
+  padding: 0;
+}
 .demo-item {
   margin-top: 20px;
 }
 .hello {
   position: relative;
   width: 100%;
-  padding: 10px;
   overflow:hidden;
   box-sizing: border-box;
 }
 
 .demo-1-container {
   display: flex;
+  margin-top: 50px;
   justify-content: space-between;
   align-items: center;
   position: relative;
-  height: 100px;;
-  overflow: scroll;
+  // height: 100px;;
+  // overflow: scroll;
   background: -webkit-linear-gradient(top, #D22D23, #D22D23 16%, #FB8065 55%, #FB8065);;
   /* background:linear-gradient(48deg,rgba(0,153,170,1) 0%,rgba(0,198,214,1) 100%); */
   /* margin-top: 10px; */
@@ -259,5 +284,8 @@ export default {
       background: url('../assets/test11.png') 100% 0 no-repeat;
       background-size: auto 100%;
   }
+}
+#canvas-demo1 {
+  margin-top: 50px;
 }
 </style>

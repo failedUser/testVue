@@ -61,16 +61,16 @@ function toSvg (node, options) {
     .then(applyOptions)
     .then(function (clone) {
       return makeSvgDataUri(clone,
-        options.width || util.width(node),
-        options.height || util.height(node)
+        util.width(node),
+        util.height(node)
       )
     })
 
   function applyOptions (clone) {
     if (options.bgcolor) clone.style.backgroundColor = options.bgcolor
 
-    if (options.width) clone.style.width = options.width + 'px'
-    if (options.height) clone.style.height = options.height + 'px'
+    // if (options.width) clone.style.width = options.width + 'px'
+    // if (options.height) clone.style.height = options.height + 'px'
 
     if (options.style) {
       Object.keys(options.style).forEach(function (property) {
@@ -156,41 +156,60 @@ function draw (domNode, options) {
     .then(util.delay(100))
     .then(function (image) {
       let windowDevicePixel = 4
-      var canvas = newCanvas(domNode, windowDevicePixel)
-      // canvas.getContext('2d').drawImage(image, 0, 100, image.width, image.height, 0, 0, canvas.width, canvas.height)
-      resizeImage(domNode, canvas, image)
-      document.body.append(canvas)
-      //   console.log('canvas', canvas)
+      // var canvas = newCanvas(domNode, windowDevicePixel)
+      // resizeImage(domNode, canvas, image)
+      // document.body.append(image)
+
+      var canvas = document.createElement('canvas')
+      // console.log('image', image.width, image.height)
+
+      // 第一步先变高清
+      let cWidth = window.screen.availWidth
+      let cHeight = window.screen.availHeight
+      canvas.width = cWidth * windowDevicePixel
+      canvas.height = cHeight * windowDevicePixel
+      canvas.style.cssText = `
+                    width: ${cWidth}px;
+                    height: ${cHeight}px;
+                `
+      if (options.bgcolor) {
+        var ctx = canvas.getContext('2d')
+        ctx.fillStyle = options.bgcolor
+        ctx.fillRect(0, 0, cWidth, cHeight)
+      }
+      // 裁剪图片然后熏染到canvans上
+      resizeImage(domNode, canvas, image, windowDevicePixel)
       return canvas
     })
 
-  function newCanvas (domNode, scale) {
-    var canvas = document.createElement('canvas')
-    canvas.width = (options.width || util.width(domNode)) * scale
-    canvas.height = (options.height || util.height(domNode)) * scale
-    canvas.style.cssText = `
-                width: ${options.width || util.width(domNode)}px;
-                height: ${options.height || util.height(domNode)}px;
-            `
-    if (options.bgcolor) {
-      var ctx = canvas.getContext('2d')
-      ctx.fillStyle = options.bgcolor
-      ctx.fillRect(0, 0, canvas.width * scale, canvas.height * scale)
-    }
+  // function newCanvas (domNode, scale) {
+  //   var canvas = document.createElement('canvas')
+  //   canvas.width = (options.width || util.width(domNode)) * scale
+  //   canvas.height = (options.height || window.screen.availHeight) * scale
+  //   console.log('util计算的尺寸', util.width(domNode), util.height(domNode))
+  //   canvas.style.cssText = `
+  //               width: ${options.width || util.width(domNode)}px;
+  //               height: ${options.height || window.screen.availHeight}px;
+  //           `
+  //   if (options.bgcolor) {
+  //     var ctx = canvas.getContext('2d')
+  //     ctx.fillStyle = options.bgcolor
+  //     ctx.fillRect(0, 0, canvas.width, canvas.height)
+  //   }
 
-    return canvas
-  }
+  //   return canvas
+  // }
 
-  function resizeImage (domNode, canvas, image) {
+  function resizeImage (domNode, canvas, image, windowDevicePixel) {
     // let scrollY = domNode.scrollHeight;
-    let Y = !domNode.ownerDocument || domNode.tagName === 'BODY'
+    let Y = util.domIsBody(domNode)
       ? document.documentElement.scrollTop
       : domNode.scrollTop
-    let X = !domNode.ownerDocument || domNode.tagName === 'BODY'
+    let X = util.domIsBody(domNode)
       ? document.documentElement.scrollLeft
       : domNode.scrollLeft
     let sx = image.width
-    let sy = image.height
+    let sy = window.screen.availHeight
     let dx = canvas.width
     let dy = canvas.height
     canvas.getContext('2d').drawImage(
@@ -420,7 +439,8 @@ function newUtil () {
     escapeXhtml: escapeXhtml,
     makeImage: makeImage,
     width: width,
-    height: height
+    height: height,
+    domIsBody: domIsBody
   }
 
   function mimes () {
@@ -591,6 +611,9 @@ function newUtil () {
     return string.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1')
   }
 
+  function domIsBody (node) {
+    return node.ownerDocument.documentElement === node || node.tagName === 'BODY'
+  }
   function delay (ms) {
     return function (arg) {
       return new Promise(function (resolve) {
@@ -621,7 +644,12 @@ function newUtil () {
   function height (node) {
     var topBorder = px(node, 'border-top-width')
     var bottomBorder = px(node, 'border-bottom-width')
-    return node.scrollHeight + topBorder + bottomBorder
+    let height = node.scrollHeight + topBorder + bottomBorder
+    let windowHeight = window.screen.availHeight
+    if (domIsBody(node) && height < windowHeight) {
+      height = windowHeight
+    }
+    return height
   }
 
   function px (node, styleProperty) {

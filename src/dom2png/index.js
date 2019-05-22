@@ -283,10 +283,18 @@ function cloneNode (node, filter, root) {
       copyStyle(window.getComputedStyle(original), clone.style)
 
       function copyStyle (source, target) {
-        if (source.cssText) target.cssText = source.cssText
+        let sourceText = source.cssText;
+        if (source.position === 'fixed') {
+          let Y = document.documentElement.scrollTop;
+          let topText = sourceText.match(/;\s*top:\s* [0-9]+px/)[0];
+          let count = Number(topText.match(/[0-9]+/)[0] || 0);
+          sourceText = sourceText.replace(topText, topText.replace(count, count + Y))
+        }
+        if (source.cssText) target.cssText = sourceText
         else copyProperties(source, target)
 
         function copyProperties (source, target) {
+          console.error('之前不知道什么情况下没有cssText, 所以没有兼容fixed', source);
           util.asArray(source).forEach(function (name) {
             target.setProperty(
               name,

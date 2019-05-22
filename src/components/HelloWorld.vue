@@ -6,22 +6,31 @@
     
     <!-- 处理水平居中的问题 -->
     <div class="demo-1 demo-item">
+      <div class="demo-fixed">
+        滚动切图这个问题很是不准。只能从顶部开始切
+        <div class="img"></div>
+      </div>
       <div class="demo-1-container">
           <div class="middle-line"> </div>
           <div class="demo-1-item">
               <!-- <img class="demo-1-img" src="https://static.caibeike.com/i/3b15547dc8e25fd51c01b2ad726361c1-cnRNZm" /> -->
               <!-- <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" /> -->
               <img  class="demo-3-img"  src="../assets/test11.png" />
+              <div class="demo-shadow">shadow</div>
               <!-- <span class="resolve-baseline">121212121212121212</span> -->
               <!-- <span class="demo-2-clamp">                
                 121212121212121212121212121212121212121 2121212121212121212121212
                 </span> -->
-              <p>2222 </p>
+              <p>正常的字体A12d.$#@^&*$ </p>
                <div class="back-img"></div>
               <div class="after-img"></div>
           </div>
+          <div class="demo-absolute">
+            滚动切图这个问题很是不准。只能从顶部开始切
+            <div class="img"></div>
+          </div>
       </div>
-      <canvas width="1500" height="800" style="width: 375px;height: 200px" id="canvas-demo1" />
+      <canvas id="canvas-demo1" />
     </div>
     
     <!-- 处理不支持截断的属性 -->
@@ -71,14 +80,11 @@ export default {
       img.src = 'https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R';
     },
     domToImage() {
-      let _domContainer = document.querySelector(".demo-1-container");
-      // this.resoveDomImage(_domContainer);
+      // let _domContainer = document.querySelector(".demo-1-container");
+      let _domContainer = document.body;
       domtoimage.toPng(_domContainer, {
-        // width: 1500,
-        // height: 800,
       })
         .then(function (dataUrl) {
-            // console.log('dataUrl', dataUrl);
             var img = new Image();
             img.src = dataUrl;
             img.onload = () => {
@@ -86,55 +92,15 @@ export default {
                let width = img.width;
                let height = img.height;
               let ctx = dom.getContext('2d');
+              dom.width = img.width;
+              dom.height = img.height;
+               dom.style.cssText = `width:${dom.width/4}px;height:${dom.height/4}`;
               ctx.drawImage(img,0,0, width, height);
             }
         })
         .catch(function (error) {
             console.error('oops, something went wrong!', error);
         });
-    },
-    getImgToBase64(src) {
-      return new Promise((resolve, reject) => {
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
-        let img = new Image();
-        //  img.setAttribute('crossOrigin', 'anonymous');
-        // img.setAttribute('crossOrigin', 'anonymous');
-        img.onload = () => {
-          canvas.height = img.height;
-          canvas.width = img.width;
-           img.setAttribute('crossOrigin', 'anonymous');
-          ctx.drawImage(img, 0, 0);
-          document.body.appendChild(canvas);
-          let dataUrl = canvas.toDataURL();
-          resolve(dataUrl);
-        }
-        img.src = src;
-      })
-    },
-    resoveDomImage(dom) {
-      const childrenIterator = (children) => {
-          Array.from(children).forEach(element => {
-            if (element.tagName === 'IMG') {
-              this.getImgToBase64(element.src).then(res => {
-                console.log('base64', res);
-                if (element.childNodes.length > 0) {
-                  childrenIterator(element.childNodes);
-                }
-              })
-              
-            } else {
-              if (element.childNodes.length > 0) {
-                  childrenIterator(element.childNodes);
-                }
-            }
-            // // 找出有lineClamp属性的元素
-            // let _style = getComputedStyle(element);
-            // let hasBackImg = findBackgroundNode(element);
-            // hasBackImg && resolveBackgroundImageNode(element, hasBackImg);
-          });
-      }
-      childrenIterator(dom.childNodes);
     }
   },
   watch: {
@@ -146,7 +112,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="less" scoped>
 
 .demo-item {
   margin-top: 20px;
@@ -251,5 +217,44 @@ export default {
 .demo-1-img {
     width: 26px;
   height: 25px;
+}
+.demo-shadow {
+  width:17.25rem;
+  height:2.25rem;
+  background:rgba(255,255,255,1);
+  box-shadow:0rem 0.1rem 0.4rem 0rem rgba(233,233,233,1);
+  border-radius:1.13rem;
+  border:0.03rem solid rgba(245,245,245,1);
+}
+.demo-fixed{
+    position: fixed;
+    padding: 15px;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    .img {
+      height: 110px;
+      background: url('../assets/test11.png') 100% 0 no-repeat;
+      background-size: auto 100%;
+  }
+}
+
+.demo-absolute{
+    position: absolute;
+    padding: 15px;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    .img {
+      height: 110px;
+      background: url('../assets/test11.png') 100% 0 no-repeat;
+      background-size: auto 100%;
+  }
 }
 </style>

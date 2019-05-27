@@ -1,9 +1,12 @@
 <template>
   <div class="hello">
-    <div @click="clipWindow">切屏 </div>
+    <!-- <div @click="clipWindow">切屏 </div> -->
      <div @click="domToImage">切屏 demo-to-iamge </div>
     <div @click="canvasBySelf"> 自己切屏</div>
-    
+    <!-- <img  style="width:100%" src="../assets/img14.png" /> -->
+     <!-- <img  style="width:100%" src="../assets/logo.png" /> -->
+      <img  style="width:100%" src="../assets/bg.jpeg" />
+        <canvas style="margin-top:50px;" id="canvas-demo1" />
     <!-- 处理水平居中的问题 -->
     <div class="demo-1 demo-item">
        <!-- 检查fixed 定位模块 -->
@@ -20,7 +23,7 @@
         <div class="img"></div>
       </div> -->
        <!-- 处理各种字体 -->
-      <div class="demo-1-container">
+      <!-- <div class="demo-1-container">
       
           <div class="middle-line"> </div>
           <div class="demo-1-item">
@@ -38,39 +41,34 @@
                 <div class="demo-shadow">shadow</div>
 
           </div>
-      </div>
+      </div> -->
       <!-- 处理各种图片 -->
-      <div class="demo-1-container">
+      <!-- <div class="demo-1-container">
           <div class="middle-line"> </div>
           <div class="demo-1-item">
-              <!-- <img class="demo-1-img" src="https://static.caibeike.com/i/3b15547dc8e25fd51c01b2ad726361c1-cnRNZm" /> -->
-              <!-- <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" /> -->
-              <img  class="demo-3-img"  src="../assets/test11.png" />
-              <!-- <span class="resolve-baseline">121212121212121212</span> -->
-              <!-- <span class="demo-2-clamp">                
-                121212121212121212121212121212121212121 2121212121212121212121212
-                </span> -->
-              <!-- <p>正常的字体A12d.$#@^&*$ </p> -->
+              <img class="demo-1-img" style="height:100px;width:100px;" src="http://alpha-2115.caibeike.com/i/700267dc82a2d317e5b250fe8f27acd4-cxh02W@!750c1624" />
+              
+              <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" />
+              <img  class="demo-3-img after-img back-img "  src="../assets/img14.png" />
                <div class="back-img"></div>
                <div class="back-img-much"></div>
               <div class="after-img"></div>
           </div>
-          <!-- <div class="demo-absolute">
+          <div class="demo-absolute">
             滚动切图这个问题很是不准。只能从顶部开始切
             <div class="img"></div>
-          </div> -->
-      </div>
-      <div class="demo-1-container">
+          </div>
+      </div> -->
+      <!-- <div class="demo-1-container">
           <div class="middle-line"> </div>
           <div class="demo-1-item">
-              <!-- <img class="demo-1-img" src="https://static.caibeike.com/i/3b15547dc8e25fd51c01b2ad726361c1-cnRNZm" /> -->
-              <!-- <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" /> -->
+              <img class="demo-3-img" src="https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R" />
               <img  class="demo-3-img"  src="../assets/test11.png" />
               <div class="demo-shadow">shadow</div>
-              <!-- <span class="resolve-baseline">121212121212121212</span> -->
-              <!-- <span class="demo-2-clamp">                
+              <span class="resolve-baseline">121212121212121212</span>
+              <span class="demo-2-clamp">                
                 121212121212121212121212121212121212121 2121212121212121212121212
-                </span> -->
+                </span>
               <p>正常的字体A12d.$#@^&*$ </p>
                <div class="back-img"></div>
               <div class="after-img"></div>
@@ -79,19 +77,20 @@
             滚动切图这个问题很是不准。只能从顶部开始切
             <div class="img"></div>
           </div>
-      </div>
-      <canvas style="display:none;margin-top:50px;" id="canvas-demo1" />
+      </div> -->
+    
     </div>
     
     <!-- 处理不支持截断的属性 -->
-    <div class="demo-2 demo-item">
+    <!-- <div class="demo-2 demo-item">
         
-      </div>
+      </div> -->
   </div>
 </template>
 
 <script>
 import domtoimage from '../dom2png';
+import img2window from '../dom2png/img2window';
 import cbkHtml2Canvas from './cbkHtml2canvas';
 
 
@@ -123,36 +122,101 @@ export default {
       let dom = document.querySelector('#canvas-demo1');
       let ctx = dom.getContext('2d');
       var img = new Image();
-      img.onload = function(){
-        ctx.drawImage(img,0,0, 50 * 4, 56.333 * 4);
+      img.onload = () => {
+        dom.height = img.height;
+        dom.width = img.width;
+        ctx.drawImage(img,0,0, img.width, img.height);
+        let img1 = document.createElement('img');
+        img1.src = dom.toDataURL();
         ctx.stroke();
+        this.makeSvgDataUri(img1, img.width, img.height).then(svg => {
+          let img2 = document.createElement('img');
+          img2.src = svg;
+          document.body.append(img2);
+          img2.onload = () => {
+            let canvas = document.createElement('canvas');
+            let context = canvas.getContext('2d');
+            canvas.height = img2.height/img2.width * window.innerWidth;
+            canvas.width = window.innerWidth;
+            context.drawImage(img2,0,0,canvas.width/2, canvas.height/2 ,0,0, canvas.width, canvas.height);
+            document.body.append(canvas);
+          }
+        })
+
       }
-      img.src = 'https://static.caibeike.com/i/c1d28e58714c028f3c15b2bf3bb63cea-dq4O4R';
+      img.src = require('../assets/bg.jpeg');
+      //  img.src = require('../assets/img14.png');
+    },
+    escapeXhtml (string) {
+        return string.replace(/#/g, '%23').replace(/\n/g, '%0A');
+    },
+    makeSvgDataUri (node, width, height) {
+    return Promise.resolve(node)
+        .then(function (node) {
+            node.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+            return new XMLSerializer().serializeToString(node);
+        })
+        .then(this.escapeXhtml)
+        .then(function (xhtml) {
+            return '<foreignObject x="0" y="0" width="100%" height="100%">' + xhtml + '</foreignObject>';
+        })
+        .then(function (foreignObject) {
+            return '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
+                    foreignObject + '</svg>';
+        })
+        .then(function (svg) {
+            return 'data:image/svg+xml;charset=utf-8,' + svg;
+        });
     },
     domToImage() {
       // let _domContainer = document.querySelector(".demo-1-container");
-      let _domContainer = document.documentElement;
-      domtoimage.toPng(_domContainer, {
-        bgcolor: 'gray'
-      })
-        .then(function (dataUrl) {
-            var img = new Image();
-            img.src = dataUrl;
-            img.onload = () => {
-               let dom = document.querySelector('#canvas-demo1');
-               let width = img.width;
-               let height = img.height;
-              let ctx = dom.getContext('2d');
-              dom.width = img.width;
-              dom.height = img.height;
-              // console.log(img.width, img.height);
-               dom.style.cssText = `width:${dom.width/4}px;height:${dom.height/4}px`;
-              ctx.drawImage(img,0,0, width, height);
-              dom.style.display = 'block';
-            }
+      // let _domContainer = document.documentElement;
+      // domtoimage.toPng(_domContainer, {
+      //   bgcolor: 'gray'
+      // })
+      //   .then(function (dataUrl) {
+      //       var img = new Image();
+      //       img.src = dataUrl;
+      //       img.onload = () => {
+      //          let dom = document.querySelector('#canvas-demo1');
+      //          let width = img.width;
+      //          let height = img.height;
+      //         let ctx = dom.getContext('2d');
+      //         dom.width = img.width;
+      //         dom.height = img.height;
+      //         // console.log(img.width, img.height);
+      //          dom.style.cssText = `width:${dom.width/4}px;height:${dom.height/4}px`;
+      //         ctx.drawImage(img,0,0, width, height);
+      //         dom.style.display = 'block';
+      //       }
+      //   })
+      //   .catch(function (error) {
+      //       console.error('oops, something went wrong!', error);
+      //   });
+        // let _domContainer = document.documentElement;
+        let _domContainer = document.querySelector('.hello');
+        img2window(_domContainer, {
+            bgcolor: 'gray', // 背景色
+            style: '', //被移除
+            onclone: function(node) { // 定制dom 并且不影响原本的展示
+                // node.style.marginTop = '100px';
+            },
+            // qrImage: , // 支持本地链接支持base64 如果有qrImage时忽略qrUrl
+            qrUrl: 'www.baidu.com', // qrCode链接，如果没有的话不展示
+            qrConfig: {}, //支持qrcode官方所有配置
+            // qrWidth: 100, // 如果是number类型的话默认是px
+            qrHeight: '5rem',
+            top: '',//
+            left: '', //
+            right: '', //
+            bottom: '2rem',
+            screenType: 'fixed', // append, fixed, none
+            remBaseSize: 20 //当前设计标准是20， 如果没有的话就是14
         })
         .catch(function (error) {
-            console.error('oops, something went wrong!', error);
+            // window.open(error.target.src);
+            console.log(error.target.src);
+            console.error('oops, something went wrong!', error.target.src);
         });
     }
   },
@@ -252,10 +316,10 @@ body {
 
 .back-img {
   width: 50px;
-  height: 56.33px;
+  height: 70px;
   background: url('../assets/test11.png') no-repeat;
   background-size: 100%;
-  transform: translateZ(0) scale(1, 1);
+  // transform: translateZ(0) scale(1, 1);
   display: block;
 }
 .after-img::before {
@@ -282,7 +346,7 @@ body {
   height: 56.33px;
 }
 .demo-1-img {
-    width: 26px;
+  width: 26px;
   height: 25px;
 }
 .demo-shadow {
